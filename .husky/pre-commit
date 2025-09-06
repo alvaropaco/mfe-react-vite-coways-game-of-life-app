@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Fail fast
+set -e
+
+# Lint TypeScript types and ESLint across workspaces
+printf "\n➡️  Running typecheck and ESLint before commit...\n"
+yarn lint
+
+# Optional: run unit tests when present (kept commented for speed)
+# yarn test

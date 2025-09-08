@@ -1,6 +1,11 @@
 {
   "name": "gol-frontend-mfe",
   "private": true,
+  "author": {
+    "name": "Alvaro Paco",
+    "email": "alvaropaconeto@gmail.com"
+  },
+  "license":"Apache-2.0",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -23,7 +28,7 @@
     "test:storybook": "test-storybook",
     "test:storybook:watch": "test-storybook --watch",
     "test:storybook:ci": "CI=1 test-storybook",
-    "test:storybook:url": "test-storybook --url http://localhost:6006",
+    "test:storybook:local": "test-storybook --url http://localhost:6006",
     "sb:browsers": "npx playwright install",
     "build-storybook": "storybook build -o storybook-static",
     "typecheck": "yarn workspace @gol/board-mfe tsc --noEmit && yarn workspace @gol/controls-mfe tsc --noEmit && yarn workspace @gol/shell tsc --noEmit",

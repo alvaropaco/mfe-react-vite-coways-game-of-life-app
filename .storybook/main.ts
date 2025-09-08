@@ -10,6 +10,7 @@ const config: StorybookConfig = {
     "@storybook/addon-interactions",
     "msw-storybook-addon"
   ],
+  staticDirs: ['../public'],
   framework: {
     name: "@storybook/react-vite",
     options: {}

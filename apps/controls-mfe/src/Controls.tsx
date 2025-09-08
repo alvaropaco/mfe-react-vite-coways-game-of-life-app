@@ -4,7 +4,6 @@ import { useAdvanceMutation, useBoard, usePreviewNext, useUpdateGridMutation } f
 function useBoardId(){
   const [id, setId] = React.useState<string|null>(()=>localStorage.getItem('boardId'))
   React.useEffect(()=>{
-    // Initialize from localStorage and subscribe to cross-MFE updates
     setId(localStorage.getItem('boardId') || null)
     const handler = (e: Event) => {
       const custom = e as CustomEvent<string>
@@ -21,7 +20,6 @@ function makeEmpty(h: number, w: number): boolean[][] {
   return Array.from({ length: h }, () => Array.from({ length: w }, () => false))
 }
 
-// Memoized sub-components to isolate frequent board re-renders from button controls
 const ControlsButtons = React.memo(function ControlsButtons({
   onNext,
   onAdvanceN,
@@ -88,17 +86,14 @@ export default function Controls(){
   const advance = useAdvanceMutation(boardId ?? '')
   const update = useUpdateGridMutation(boardId ?? '')
 
-  // Keep stable refs to mutation objects to avoid handler identity churn
   const advanceRef = React.useRef(advance)
   React.useEffect(()=>{ advanceRef.current = advance }, [advance])
   const updateRef = React.useRef(update)
   React.useEffect(()=>{ updateRef.current = update }, [update])
 
   const [playing, setPlaying] = React.useState(false)
-  // Grace-period state to stabilize button disabled and avoid flicker on manual clicks
   const [manualAdvancing, setManualAdvancing] = React.useState(false)
 
-  // Keep latest board dimensions in refs so handlers remain stable
   const hRef = React.useRef<number>(20)
   const wRef = React.useRef<number>(20)
   React.useEffect(()=>{
@@ -106,9 +101,7 @@ export default function Controls(){
     if(data?.width) wRef.current = data.width
   }, [data?.height, data?.width])
 
-  // Stable callbacks for controls (read mutate from refs)
   const onNext = React.useCallback(()=>{
-    // Mark manual advancing and keep a small grace period after completion to avoid rapid disabled toggling
     setManualAdvancing(true)
     advanceRef.current.mutateAsync(1).finally(()=>{
       setTimeout(()=> setManualAdvancing(false), 120)
@@ -116,7 +109,6 @@ export default function Controls(){
   }, [])
 
   const onAdvanceN = React.useCallback((n: number)=>{
-    // Mark manual advancing and keep a small grace period after completion to avoid rapid disabled toggling
     setManualAdvancing(true)
     advanceRef.current.mutateAsync(n).finally(()=>{
       setTimeout(()=> setManualAdvancing(false), 120)
@@ -132,7 +124,6 @@ export default function Controls(){
     updateRef.current.mutate(makeEmpty(hRef.current, wRef.current))
   }, [boardId])
 
-  // Interval effect - uses advanceRef to avoid depending on advance object identity
   React.useEffect(()=>{
     if(!playing || !boardId) return
     const h = setInterval(()=> advanceRef.current.mutate(1), 500)

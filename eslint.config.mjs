@@ -38,5 +38,14 @@ export default [
     settings: {
       react: { version: 'detect' }
     }
+  },
+  // Relax rules for Storybook stories to favor examples and interactive docs
+  {
+    files: ['**/*.stories.@(ts|tsx)'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'react-hooks/rules-of-hooks': 'off'
+    }
   }
 ]

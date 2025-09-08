@@ -38,33 +38,28 @@ export default function Board(): JSX.Element {
         try {
           const id = await upload.mutateAsync(req)
           localStorage.setItem('boardId', id)
-          // Notify other MFEs immediately
-          try { window.dispatchEvent(new CustomEvent('gol:boardIdChanged', { detail: id })) } catch { /* noop */ void 0 }
+          try { window.dispatchEvent(new CustomEvent('gol:boardIdChanged', { detail: id })) } catch { void 0 }
           setBoardId(id)
-        } catch { /* Swallow here; UI will show upload.error if needed */ void 0 }
+        } catch { void 0 }
       }
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardId])
+  }, [boardId, upload])
 
   const onToggle = React.useCallback(async (r: number, c: number) => {
-    // Immediately notify interaction so Controls can show UI without reload
-    try { window.dispatchEvent(new Event('gol:boardInteracted')) } catch { /* noop */ void 0 }
+    try { window.dispatchEvent(new Event('gol:boardInteracted')) } catch { void 0 }
     if (!data || !boardId) return;
     const base = ensureGrid(data.grid, data.height, data.width)
     const clone = base.map(row => row.slice());
     clone[r][c] = !clone[r][c];
 
-    // Optimistic update: cache patch for current board
     const key = ['board', boardId]
     const previous = qc.getQueryData<BoardStateResponse>(key)
     const optimistic: BoardStateResponse | undefined = previous ? { ...previous, grid: clone, aliveCount: countAlive(clone) } : undefined
     if (optimistic) qc.setQueryData(key, optimistic)
 
     try {
-      await update.mutateAsync(clone) // Mantém o mesmo boardId
+      await update.mutateAsync(clone)
     } catch {
-      // Rollback
       if (previous) qc.setQueryData(key, previous)
     }
   }, [data, boardId, qc, update])

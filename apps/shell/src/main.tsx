@@ -2,9 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// @ts-expect-error Module Federation remote type is provided at runtime
 import Board from 'board_mfe/Board'
-// @ts-expect-error Module Federation remote type is provided at runtime
 import Controls from 'controls_mfe/Controls'
 
 const qc = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } } })

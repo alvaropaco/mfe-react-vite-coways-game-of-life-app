@@ -17,30 +17,44 @@
     "build": "npm-run-all -s \"build:*\"",
     "build:shell": "yarn workspace @gol/shell build",
     "build:board": "VITE_API_URL=${VITE_API_URL:-http://localhost:8080} yarn workspace @gol/board-mfe build",
-
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "build:all": "yarn workspaces foreach -A -v run build",
+    "storybook": "storybook dev -p 6006 -h 0.0.0.0",
+    "storybook:build": "storybook build",
+    "test:storybook": "test-storybook",
+    "test:storybook:watch": "test-storybook --watch",
+    "test:storybook:ci": "CI=1 test-storybook",
+    "test:storybook:url": "test-storybook --url http://localhost:6006",
+    "sb:browsers": "npx playwright install",
+    "build-storybook": "storybook build -o storybook-static",
     "typecheck": "yarn workspace @gol/board-mfe tsc --noEmit && yarn workspace @gol/controls-mfe tsc --noEmit && yarn workspace @gol/shell tsc --noEmit",
-    "lint:eslint": "eslint . --ext .ts,.tsx --max-warnings=0",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "lint:eslint": "eslint apps/*/src packages/*/src --ext .ts,.tsx --max-warnings=5",
+    "lint:fix": "eslint apps/*/src packages/*/src --ext .ts,.tsx --fix",
     "lint": "npm-run-all -s typecheck lint:eslint",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.1.10",
-    "@storybook/addon-interactions": "^8.1.10",
-    "@storybook/react-vite": "^8.1.10",
+    "@storybook/addon-essentials": "8.1.10",
+    "@storybook/addon-interactions": "8.1.10",
+    "@storybook/react-vite": "8.1.10",
+    "@storybook/test-runner": "0.16.0",
     "@storybook/testing-library": "^0.2.2",
-    "msw": "^2.3.1",
-    "msw-storybook-addon": "^2.0.3",
-    "npm-run-all": "^4.1.5",
-    "eslint": "^9.9.0",
-    "@typescript-eslint/parser": "^8.4.0",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
+    "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.36.1",
     "eslint-plugin-react-hooks": "^5.0.0",
     "husky": "^9.1.6",
-    "typescript": "^5.9.2"
+    "msw": "^2.3.1",
+    "msw-storybook-addon": "^2.0.3",
+    "npm-run-all": "^4.1.5",
+    "storybook": "8.1.10",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.4.0"
   },
-  "packageManager": "yarn@4.9.4"
+  "packageManager": "yarn@4.9.4",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

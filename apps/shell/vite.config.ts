@@ -11,7 +11,7 @@ export default defineConfig({
       name: '@gol/shell',
       filename: 'remoteEntry.js',
       exposes: {},
-      // Use envs to allow dynamic ports during dev (when preview auto-picks free ports)
+      
       remotes: {
         board_mfe: (process.env.BOARD_REMOTE as string) || 'http://localhost:5174/assets/remoteEntry.js',
         controls_mfe: (process.env.CONTROLS_REMOTE as string) || 'http://localhost:5175/assets/remoteEntry.js'
@@ -38,7 +38,13 @@ export default defineConfig({
     target: 'esnext',
     modulePreload: true
   },
+  resolve: {
+    // Important for Yarn workspaces in Docker to resolve symlinked deps consistently
+    preserveSymlinks: true
+  },
   optimizeDeps: {
+    // Avoid prebundling react-query to prevent esbuild path resolution issues
+    exclude: ['@tanstack/react-query'],
     esbuildOptions: {
       supported: { 'top-level-await': true }
     }
